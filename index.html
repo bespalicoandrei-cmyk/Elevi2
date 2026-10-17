@@ -1,576 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Catalogul Meu — Modern (Dark)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg: #071028;
-      --panel: #0e1624;
-      --muted: #9fb0d6;
-      --muted-2: #7f91b0;
-      --text: #e6eef8;
-      --accent: linear-gradient(135deg,#6b75ff,#9b59ff);
-      --accent-plain: #7c66ff;
-      --glass: rgba(255,255,255,0.03);
-      --radius: 12px;
-      --shadow-soft: 0 8px 24px rgba(3,6,20,0.6);
-      --card-border: rgba(255,255,255,0.03);
-      --success: #34d399;
-      --danger: #ff6b6b;
-      --focus: 2px solid rgba(124,102,255,0.25);
-      --max-width: 1200px;
-    }
-
-    /* Reset & base */
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:var(--text);background:
-      radial-gradient(800px 360px at 4% 8%, rgba(123,111,255,0.06), transparent 10%),
-      linear-gradient(180deg,#040814 0%, #071028 60%);-webkit-font-smoothing:antialiased}
-    a{color:inherit;text-decoration:none}
-    button{font-family:inherit}
-
-    /* Layout */
-    .app{
-      max-width:var(--max-width);
-      margin:28px auto;
-      display:grid;
-      grid-template-columns:80px 1fr;
-      gap:20px;
-      padding:18px;
-    }
-
-    /* SIDEBAR */
-    .sidebar{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-      border-radius:14px;
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:12px;
-      box-shadow:var(--shadow-soft);
-      border:1px solid var(--card-border);
-      min-height:240px;
-    }
-    .brand{display:flex;flex-direction:column;align-items:center;gap:8px}
-    .logo{
-      width:52px;height:52px;border-radius:12px;
-      display:grid;place-items:center;font-weight:800;font-size:20px;
-      background:var(--accent);box-shadow:0 10px 30px rgba(76, 61, 255, 0.12);
-    }
-    .brand small{color:var(--muted);font-size:12px;text-align:center}
-
-    nav.side-nav{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center}
-    .nav-btn{
-      width:56px;height:56px;border-radius:12px;border:0;background:transparent;color:var(--muted-2);
-      display:grid;place-items:center;cursor:pointer;transition:all .18s;
-      outline:none;
-    }
-    .nav-btn:hover{transform:translateY(-4px);background:var(--glass);color:var(--text)}
-    .nav-btn.active{background:linear-gradient(180deg, rgba(124,102,255,0.12), rgba(124,102,255,0.06));color:var(--text);box-shadow:0 8px 20px rgba(93,79,255,0.08)}
-
-    .sidebar footer{margin-top:auto;color:var(--muted);font-size:12px;text-align:center}
-
-    /* MAIN */
-    main{
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    header.top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:14px;border-radius:12px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid var(--card-border);
-      box-shadow:var(--shadow-soft);
-    }
-    .title{
-      display:flex;flex-direction:column;
-    }
-    .title h1{margin:0;font-size:1.05rem;letter-spacing:-0.01em}
-    .title p{margin:4px 0 0 0;color:var(--muted);font-size:13px}
-
-    .controls{display:flex;align-items:center;gap:12px}
-    .search{
-      display:flex;align-items:center;gap:10px;background:var(--glass);padding:8px;border-radius:12px;
-      width:min(640px,56%);border:1px solid rgba(255,255,255,0.02)
-    }
-    .search input{background:transparent;border:0;color:var(--text);outline:none;width:100%;font-weight:600;font-size:0.95rem}
-    .icon-btn{
-      height:44px;padding:8px;border-radius:10px;border:0;background:transparent;color:var(--muted-2);cursor:pointer;display:grid;place-items:center;transition:all .14s;outline:none;
-    }
-    .icon-btn:hover{background:var(--glass);color:var(--text)}
-
-    /* BOARD GRID */
-    .board{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:16px;
-      align-items:start;
-    }
-
-    .card{
-      grid-column: span 3;
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-      padding:16px;border-radius:12px;border:1px solid var(--card-border);
-      box-shadow:0 8px 20px rgba(2,6,23,0.5);
-      transition:transform .14s;
-    }
-    .card:hover{transform:translateY(-6px)}
-    .card h4{margin:0;color:var(--muted);font-size:0.78rem;font-weight:700;text-transform:uppercase}
-    .card .big{margin-top:12px;font-weight:800;font-size:2rem;color:var(--text);letter-spacing:-0.02em}
-
-    .wide{grid-column:span 6}
-    .full{grid-column:span 12}
-
-    .panel{background:var(--panel);padding:14px;border-radius:10px;border:1px solid var(--card-border)}
-
-    /* Students list */
-    .students{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-    .student-item{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-radius:10px;
-      background:linear-gradient(90deg, rgba(255,255,255,0.008), transparent);
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .left{display:flex;align-items:center;gap:12px}
-    .avatar{
-      width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#6b75ff,#9b59ff);display:grid;place-items:center;font-weight:700;color:white;
-      font-size:16px;
-    }
-    .student-name{font-weight:700}
-    .muted{color:var(--muted);font-size:13px}
-
-    .student-actions{display:flex;gap:8px}
-    .student-actions button{background:transparent;border:0;color:var(--muted-2);padding:8px;border-radius:8px;cursor:pointer}
-    .student-actions button:hover{background:var(--glass);color:var(--text)}
-
-    /* Recent activity */
-    .activity-item{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.02);font-size:0.92rem;color:var(--muted)}
-
-    /* FAB */
-    .fab{
-      position:fixed;right:22px;bottom:22px;background:var(--accent-plain);
-      width:64px;height:64px;border-radius:16px;display:grid;place-items:center;color:white;font-size:26px;border:none;cursor:pointer;box-shadow:0 18px 40px rgba(91,108,255,0.22)
-    }
-
-    /* Modal */
-    dialog{border:0;border-radius:12px;padding:0;background:transparent}
-    .modal{
-      background:linear-gradient(180deg,#08121a, #061022);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);width:min(560px,94vw);
-    }
-    .modal h3{margin:0 0 12px 0}
-    .modal form{display:flex;flex-direction:column;gap:10px}
-    .modal input[type="text"]{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:10px;color:var(--text);outline:none}
-    .modal .row{display:flex;gap:8px;justify-content:flex-end}
-
-    /* small stuff */
-    .empty{color:var(--muted);padding:10px;border-radius:8px}
-    :focus{outline:none}
-    :focus-visible{box-shadow:var(--focus)}
-    .hidden{display:none}
-
-    /* responsive */
-    @media (max-width:980px){
-      .app{grid-template-columns:64px 1fr;padding:12px}
-      .card{grid-column:span 6}
-      .wide{grid-column:span 12}
-    }
-    @media (max-width:640px){
-      .app{grid-template-columns:1fr;gap:12px;padding:12px}
-      .sidebar{flex-direction:row;justify-content:space-between;padding:10px}
-      .board{grid-template-columns:repeat(2,1fr)}
-      .card{grid-column:span 2}
-      .search{width:100%}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClassHub — Catalogul clasei 12U</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#182235;--muted:#718096;--line:#e6ebf2;--primary:#4f46e5;--primary2:#7c3aed;--green:#0f9f76;--red:#e5484d;--amber:#d97706;--shadow:0 12px 35px rgba(28,39,70,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.sidebar{background:#151b32;color:#eef1ff;padding:28px 18px;display:flex;flex-direction:column;gap:26px}.brand{display:flex;align-items:center;gap:12px;padding:0 8px}.logo{height:42px;width:42px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 7px 18px #4f46e555}.brand strong{display:block;font-size:17px;letter-spacing:.2px}.brand small{color:#a9b2d1}.nav-label{color:#828baa;font-size:11px;font-weight:800;letter-spacing:1.5px;padding:0 12px}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#bac3df;padding:12px 13px;border-radius:12px;text-align:left;display:flex;align-items:center;gap:12px;font-weight:650}.nav button.active,.nav button:hover{background:#292f4e;color:white}.nav .ico{width:22px;text-align:center;font-size:18px}.side-note{margin-top:auto;border:1px solid #343b5c;background:#202743;padding:15px;border-radius:15px;color:#bdc5e0;font-size:12px;line-height:1.5}.side-note strong{color:white;display:block;margin-bottom:5px}.main{min-width:0;padding:30px clamp(16px,3vw,42px) 50px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}.eyebrow{color:var(--primary);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px}.topbar h1{margin:5px 0 0;font-size:clamp(24px,3vw,34px);letter-spacing:-1px}.top-right{display:flex;gap:10px;align-items:center}.date-chip,.class-chip{background:white;border:1px solid var(--line);padding:10px 13px;border-radius:12px;color:#59657a;font-size:13px;font-weight:650}.class-chip{background:#eeedff;color:#4f46e5;border:0}.page{display:none}.page.active{display:block}.welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 28px;border-radius:22px;background:linear-gradient(115deg,#4f46e5,#7c3aed);color:white;box-shadow:0 16px 32px #4f46e522;margin-bottom:22px;overflow:hidden;position:relative}.welcome:after{content:"12U";position:absolute;right:20px;bottom:-32px;font-size:115px;font-weight:900;color:#ffffff12;pointer-events:none}.welcome h2{font-size:23px;margin:0 0 8px}.welcome p{margin:0;color:#e2e3ff;max-width:580px;line-height:1.6;font-size:14px}.welcome .pill{background:#ffffff20;border:1px solid #ffffff38;border-radius:999px;padding:10px 14px;white-space:nowrap;font-size:13px;font-weight:700;z-index:1}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.stat{padding:19px}.stat-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:700}.stat-icon{height:34px;width:34px;display:grid;place-items:center;border-radius:11px;background:#f0efff;font-size:17px}.stat strong{display:block;font-size:29px;margin-top:12px;letter-spacing:-1px}.stat small{color:var(--muted);font-size:12px}.grid-2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.panel{padding:22px;margin-bottom:18px;min-width:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.panel-head h3{margin:0;font-size:16px}.panel-head p{margin:5px 0 0;color:var(--muted);font-size:12px}.btn{border:0;border-radius:11px;padding:10px 14px;font-size:13px;font-weight:750;transition:.15s}.btn-primary{background:var(--primary);color:white}.btn-primary:hover{background:#4338ca;transform:translateY(-1px)}.btn-light{background:#f0f2f8;color:#35405a}.btn-danger{background:#fff0f0;color:#c92a32}.btn-success{background:#e7f8f1;color:#087f5b}.btn-sm{padding:7px 10px;font-size:12px}.muted{color:var(--muted)}.lesson-list{display:grid;gap:9px}.lesson{display:flex;align-items:center;gap:13px;border:1px solid var(--line);padding:13px;border-radius:13px;transition:.15s}.lesson:hover{border-color:#b8b5ff;background:#fafaff}.lesson-time{min-width:82px;color:#68748b;font-size:11px;font-weight:750}.lesson-number{height:34px;width:34px;border-radius:10px;display:grid;place-items:center;background:#f0efff;color:#5145d8;font-weight:850}.lesson-info{min-width:0;flex:1}.lesson-info strong{display:block;font-size:13px}.lesson-info small{color:var(--muted);font-size:11px}.lesson .arrow{color:#8b93a7;font-size:20px}.quick-list{display:grid;gap:10px}.quick-item{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.quick-item:last-child{border:0}.avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#e8eaff;color:#4f46e5;font-weight:850;font-size:12px;flex-shrink:0}.quick-item strong{font-size:13px;display:block}.quick-item small{font-size:11px;color:var(--muted)}.quick-item .status{margin-left:auto}.badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;background:#f0f2f7;color:#637087}.badge.green{background:#e3f8ef;color:#087f5b}.badge.red{background:#ffebeb;color:#c92a32}.badge.amber{background:#fff3d9;color:#a15c00}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}.field{border:1px solid #dfe5ef;border-radius:11px;padding:10px 12px;background:white;color:var(--ink);outline:none;min-width:0}.field:focus{border-color:#8b85ff;box-shadow:0 0 0 3px #4f46e51a}.search{flex:1;min-width:180px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px}table{width:100%;border-collapse:collapse;min-width:560px}th{background:#f8f9fc;color:#7b8599;text-transform:uppercase;letter-spacing:.7px;font-size:10px;text-align:left;padding:13px 15px}td{padding:13px 15px;border-top:1px solid var(--line);font-size:13px}tbody tr:hover{background:#fafbff}.student-cell{display:flex;align-items:center;gap:10px;font-weight:750}.student-cell .avatar{height:32px;width:32px;border-radius:10px}.check{width:18px;height:18px;accent-color:var(--primary);cursor:pointer}.empty{text-align:center;padding:35px;color:var(--muted)}.schedule-grid{display:grid;grid-template-columns:repeat(5,minmax(145px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}.day-col{background:#f8f9fd;border:1px solid var(--line);border-radius:15px;padding:12px;min-width:145px}.day-col h4{margin:2px 4px 12px;font-size:13px;display:flex;justify-content:space-between}.day-col h4 span{color:var(--muted);font-weight:500}.schedule-lesson{background:white;border:1px solid var(--line);border-left:3px solid #7166f0;padding:11px;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s}.schedule-lesson:hover{transform:translateY(-2px);box-shadow:0 5px 12px #20204010}.schedule-lesson strong{display:block;font-size:12px;margin-bottom:6px}.schedule-lesson small{font-size:10px;color:var(--muted)}.schedule-lesson.empty-slot{border-left-color:#cfd5e1;background:#fbfcff}.schedule-lesson.empty-slot strong{color:#a2aabb}.section-title{margin:0 0 7px;font-size:22px;letter-spacing:-.5px}.section-sub{color:var(--muted);margin:0 0 22px;font-size:13px}.modal-backdrop{display:none;position:fixed;inset:0;background:#12172a99;backdrop-filter:blur(5px);z-index:10;align-items:center;justify-content:center;padding:18px}.modal-backdrop.open{display:flex}.modal{width:min(760px,100%);max-height:90vh;overflow:auto;background:white;border-radius:22px;box-shadow:0 25px 80px #11172a55;padding:25px}.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}.modal-head h2{margin:0 0 5px;font-size:22px}.close{border:0;background:#f0f2f8;border-radius:10px;width:36px;height:36px;font-size:20px}.attendance-summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px}.summary-chip{background:#f4f5fa;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:750}.student-attendance{display:grid;grid-template-columns:1fr 190px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.student-attendance:last-child{border:0}.student-attendance .name{display:flex;gap:9px;align-items:center;font-size:13px;font-weight:700}.student-attendance select{width:100%}.modal-actions{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}.notice{border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.5;background:#fff7e6;color:#8a5600;margin-bottom:15px}.footer-note{font-size:11px;color:var(--muted);text-align:center;margin-top:12px}.toast{position:fixed;bottom:22px;right:22px;background:#182235;color:white;padding:13px 18px;border-radius:12px;box-shadow:var(--shadow);z-index:20;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;font-size:13px}.toast.show{opacity:1;transform:translateY(0)}.mobile-menu{display:none}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}.schedule-grid{grid-template-columns:repeat(5,165px)}}@media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{padding:12px 14px;gap:12px}.brand{padding:0 4px}.nav-label,.side-note{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px 11px;font-size:12px}.nav .ico{font-size:15px;width:auto}.main{padding:18px 13px 35px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:18px}.top-right{width:100%;justify-content:space-between}.welcome{padding:21px;align-items:flex-start;flex-direction:column}.welcome:after{font-size:75px}.welcome .pill{white-space:normal}.stats{gap:9px}.stat{padding:14px}.stat strong{font-size:24px}.stat-icon{height:29px;width:29px}.panel{padding:15px}.student-attendance{grid-template-columns:1fr 135px}.modal{padding:18px}.toolbar .field{width:100%;flex:auto}.toolbar button{flex:1}}
+</style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Catalogul Meu - Aplicație">
-    <aside class="sidebar" aria-label="Meniu principal">
-      <div class="brand">
-        <div class="logo" aria-hidden>📚</div>
-        <small>Catalogul Meu</small>
-      </div>
-
-      <nav class="side-nav" aria-label="Navegație">
-        <button class="nav-btn active" data-target="dashboard" title="Panou" aria-pressed="true">🏠</button>
-        <button class="nav-btn" data-target="absences" title="Absențe">📋</button>
-        <button class="nav-btn" data-target="tardiness" title="Întârzieri">⏰</button>
-        <button class="nav-btn" data-target="students" title="Elevi">👥</button>
-        <button class="nav-btn" data-target="duty" title="Serviciu">🧹</button>
-      </nav>
-
-      <footer>Demo • Offline • Modern</footer>
-    </aside>
-
-    <main>
-      <header class="top" role="banner">
-        <div class="title">
-          <h1>Clasa: <span id="schoolTitle">—</span></h1>
-          <p>Panou de administrare — temă întunecată, curat, profesional</p>
-        </div>
-
-        <div class="controls" role="search">
-          <div class="search" aria-label="Caută elev">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><circle cx="11" cy="11" r="6" stroke="currentColor"/></svg>
-            <input id="globalSearch" type="search" placeholder="Caută elev..." aria-label="Caută elev"/>
-          </div>
-
-          <div style="display:flex;gap:8px;align-items:center">
-            <button id="toggleView" class="icon-btn" title="Comută panou" aria-pressed="false">⤢</button>
-            <button id="openSettings" class="icon-btn" title="Setări">⚙️</button>
-          </div>
-        </div>
-      </header>
-
-      <section class="board" id="dashboardBoard" aria-live="polite">
-        <article class="card" aria-label="Numărul elevilor">
-          <h4>Numărul elevilor</h4>
-          <div class="big" id="countStudents">0</div>
-          <div class="muted" style="margin-top:8px;font-size:13px">Elevi înregistrați</div>
-        </article>
-
-        <article class="card" aria-label="Elevi prezenți">
-          <h4>Elevi prezenți</h4>
-          <div class="big" id="countPresent">0</div>
-          <div class="muted" style="margin-top:8px;font-size:13px">Azi</div>
-        </article>
-
-        <article class="card" aria-label="Elevi absenți">
-          <h4>Elevi absenți</h4>
-          <div class="big" id="countAbsent">0</div>
-          <div class="muted" style="margin-top:8px;font-size:13px">Azi</div>
-        </article>
-
-        <article class="card" aria-label="Elevi întârziați">
-          <h4>Elevi întârziați</h4>
-          <div class="big" id="countLate">0</div>
-          <div class="muted" style="margin-top:8px;font-size:13px">Azi</div>
-        </article>
-
-        <section class="card wide panel" aria-label="Activități recente">
-          <h3>Activități recente</h3>
-          <div id="recentList" class="activity-list">Nicio activitate încă.</div>
-        </section>
-
-        <section class="card wide panel" id="studentsPanel" aria-label="Elevi">
-          <h3>Elevi</h3>
-
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
-            <input id="studentQuick" aria-label="Adaugă rapid elev" placeholder="Adaugă rapid (Enter)" style="flex:1;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--text);outline:none"/>
-            <button id="btnQuickAdd" class="icon-btn" style="background:var(--accent-plain);color:white;padding:10px 12px;border-radius:10px">Adaugă</button>
-          </div>
-
-          <div class="students" id="studentsList" role="list" aria-label="Lista elevilor"></div>
-        </section>
-
-        <section class="card panel full hidden" id="detailPanel" aria-hidden="true">
-          <h3 id="detailTitle">Detalii</h3>
-          <div id="detailBody" style="margin-top:12px;color:var(--muted)">Selectează o înregistrare pentru detalii.</div>
-        </section>
-      </section>
-    </main>
-  </div>
-
-  <!-- Floating Add -->
-  <button class="fab" id="openAdd" title="Adaugă elev" aria-label="Adaugă elev">＋</button>
-
-  <!-- Modal dialog -->
-  <dialog id="modal" aria-labelledby="modalTitle">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h3 id="modalTitle">Adaugă elev</h3>
-      <form id="studentForm">
-        <label for="modalStudentName" class="hidden">Nume elev</label>
-        <input id="modalStudentName" name="studentName" type="text" autocomplete="name" placeholder="Nume elev (Ex: Popescu Maria)" required />
-        <div class="row">
-          <button type="button" id="modalCancel" class="icon-btn" style="color:var(--muted)">Anulează</button>
-          <button type="submit" id="modalSave" class="icon-btn" style="background:var(--accent-plain);color:white">Salvează</button>
-        </div>
-      </form>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">C</div><div><strong>ClassHub</strong><small>Panou de clasă</small></div></div>
+  <div class="nav-label">MENIU PRINCIPAL</div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard"><span class="ico">◈</span> Panou general</button>
+    <button data-page="attendance"><span class="ico">☑</span> Prezență</button>
+    <button data-page="schedule"><span class="ico">▦</span> Orar școlar</button>
+    <button data-page="duty"><span class="ico">✦</span> Elevi de serviciu</button>
+  </nav>
+  <div class="side-note"><strong>Clasa 12U</strong>Catalog digital pentru organizarea clasei. Datele se salvează automat în acest browser.</div>
+</aside>
+<main class="main">
+  <header class="topbar"><div><div class="eyebrow">Spațiul clasei tale</div><h1 id="pageTitle">Bun venit în ClassHub 👋</h1></div><div class="top-right"><div class="date-chip" id="todayDate"></div><div class="class-chip">● 12U</div></div></header>
+  <section class="page active" id="page-dashboard">
+    <div class="welcome"><div><h2>Organizează-ți clasa într-un singur loc.</h2><p>Verifică orarul, gestionează absențele și ține evidența elevilor de serviciu — simplu și rapid.</p></div><div class="pill">✦ Catalogul clasei 12U</div></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-top">TOTAL ELEVI <span class="stat-icon">♙</span></div><strong id="statTotal">30</strong><small>în lista clasei</small></div>
+      <div class="stat"><div class="stat-top">PREZENȚI AZI <span class="stat-icon">✓</span></div><strong id="statPresent">—</strong><small>după completarea prezenței</small></div>
+      <div class="stat"><div class="stat-top">ABSENȚE AZI <span class="stat-icon">◷</span></div><strong id="statAbsent">0</strong><small>toate lecțiile de azi</small></div>
+      <div class="stat"><div class="stat-top">LECȚII AZI <span class="stat-icon">▦</span></div><strong id="statLessons">0</strong><small>conform orarului</small></div>
     </div>
-  </dialog>
-
-  <script>
-  /* Storage keys & defaults */
-  const STORAGE_KEYS = {
-    students: 'catalog_students',
-    absences: 'catalog_absences',
-    tardiness: 'catalog_tardiness',
-    duty: 'catalog_duty',
-    settings: 'catalog_settings',
-    activity: 'catalog_activity'
-  };
-  const defaultSettings = { className: 'Clasa a IX-a A', lessonsPerDay: 4 };
-  const sampleStudents = ['Popescu Maria','Ionescu Andrei','Dumitru Elena','Georgescu Mihai','Vasilescu Ana','Constantin David'];
-
-  /* Utilities */
-  const load = (k, fallback) => { try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback } catch(e){ return fallback } }
-  const save = (k,v) => localStorage.setItem(k, JSON.stringify(v))
-  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,9)
-
-  const getStudents = () => load(STORAGE_KEYS.students, [])
-  const getSettings = () => ({...defaultSettings, ...load(STORAGE_KEYS.settings, defaultSettings)})
-  const setSettings = s => save(STORAGE_KEYS.settings, s)
-  const getAbsences = () => load(STORAGE_KEYS.absences, [])
-  const getLate = () => load(STORAGE_KEYS.tardiness, [])
-  const getDuty = () => load(STORAGE_KEYS.duty, [])
-  const logActivity = (text) => {
-    const entries = load(STORAGE_KEYS.activity, []);
-    entries.unshift({ id: uid(), text, time: Date.now() });
-    save(STORAGE_KEYS.activity, entries.slice(0, 30));
-  }
-
-  /* Seed on first run */
-  function seedData(){
-    if(!localStorage.getItem(STORAGE_KEYS.students)){
-      const arr = sampleStudents.map((name,i)=>({ id: uid()+'-'+i, name, createdAt: Date.now() }));
-      save(STORAGE_KEYS.students, arr);
-    }
-    if(!localStorage.getItem(STORAGE_KEYS.settings)) save(STORAGE_KEYS.settings, defaultSettings);
-    if(!localStorage.getItem(STORAGE_KEYS.activity)) save(STORAGE_KEYS.activity, [{ id: uid(), text: 'Aplicația a fost inițializată.', time: Date.now() }]);
-  }
-
-  /* Rendering */
-  function renderHeader(){
-    const s = getSettings();
-    document.getElementById('schoolTitle').textContent = s.className;
-  }
-
-  function renderStats(){
-    const students = getStudents();
-    const abs = getAbsences();
-    const late = getLate();
-    const today = new Date().toISOString().split('T')[0];
-    const present = students.length - abs.filter(a => a.date === today && a.fullDay).length;
-    document.getElementById('countStudents').textContent = students.length;
-    document.getElementById('countPresent').textContent = Math.max(present, 0);
-    document.getElementById('countAbsent').textContent = abs.filter(a => a.date === today).length;
-    document.getElementById('countLate').textContent = late.filter(l => l.date === today).length;
-  }
-
-  function formatDate(d){
-    if(!d) return '—';
-    const dt = new Date(d + 'T00:00:00');
-    return dt.toLocaleDateString('ro-RO', { day:'2-digit', month:'2-digit', year:'numeric' });
-  }
-
-  function renderRecent(){
-    const list = load(STORAGE_KEYS.activity, []);
-    const root = document.getElementById('recentList');
-    root.innerHTML = '';
-    if(!list.length){ root.textContent = 'Nicio activitate încă.'; return; }
-    list.slice(0,8).forEach(it=>{
-      const el = document.createElement('div');
-      el.className = 'activity-item';
-      el.textContent = `${new Date(it.time).toLocaleString('ro-RO')} — ${it.text}`;
-      root.appendChild(el);
-    });
-  }
-
-  /* Students list (delegated events) */
-  function renderStudents(){
-    const students = getStudents().slice().sort((a,b)=>a.name.localeCompare(b.name));
-    const container = document.getElementById('studentsList');
-    container.innerHTML = '';
-    if(!students.length){
-      container.innerHTML = '<div class="empty">Nu există elevi.</div>'; return;
-    }
-    students.forEach(s=>{
-      const li = document.createElement('div');
-      li.className = 'student-item';
-      li.setAttribute('role','listitem');
-      li.innerHTML = `
-        <div class="left">
-          <div class="avatar" aria-hidden>${s.name.split(' ').map(x=>x[0]||'').slice(0,2).join('')}</div>
-          <div>
-            <div class="student-name">${escapeHtml(s.name)}</div>
-            <div class="muted">ID: ${s.id.slice(-6)}</div>
-          </div>
-        </div>
-        <div class="student-actions">
-          <button data-action="edit" data-id="${s.id}" title="Editează">✏️</button>
-          <button data-action="delete" data-id="${s.id}" title="Șterge">🗑️</button>
-        </div>
-      `;
-      container.appendChild(li);
-    });
-  }
-
-  function escapeHtml(str){ return String(str).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) }
-
-  /* Quick add */
-  function quickAdd(name){
-    if(!name) return;
-    const students = getStudents();
-    students.push({ id: uid(), name: name.trim(), createdAt: Date.now() });
-    save(STORAGE_KEYS.students, students);
-    logActivity(`A fost adăugat elevul "${name.trim()}".`);
-    renderAll();
-  }
-
-  /* Modal handling */
-  const dialogEl = document.getElementById('modal');
-  const form = document.getElementById('studentForm');
-  let currentEditId = null;
-
-  function openModal(title = 'Adaugă elev', initial = '', onSave){
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalStudentName').value = initial || '';
-    dialogEl.showModal();
-    document.getElementById('modalStudentName').focus();
-
-    function submitHandler(e){
-      e.preventDefault();
-      const v = form.studentName.value.trim();
-      if(!v) return;
-      dialogEl.close();
-      form.removeEventListener('submit', submitHandler);
-      document.getElementById('modalCancel').removeEventListener('click', cancelHandler);
-      if(onSave) onSave(v);
-    }
-    function cancelHandler(){
-      dialogEl.close();
-      form.removeEventListener('submit', submitHandler);
-      document.getElementById('modalCancel').removeEventListener('click', cancelHandler);
-    }
-
-    form.addEventListener('submit', submitHandler);
-    document.getElementById('modalCancel').addEventListener('click', cancelHandler);
-  }
-
-  /* Bind UI */
-  function bind(){
-    // sidebar nav (visual only for demo)
-    document.querySelectorAll('.side-nav .nav-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('.side-nav .nav-btn').forEach(x=>{ x.classList.remove('active'); x.setAttribute('aria-pressed','false')});
-        btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
-      });
-    });
-
-    // Open add (FAB)
-    document.getElementById('openAdd').addEventListener('click', ()=> openModal('Adaugă elev','', v => { quickAdd(v); }));
-
-    // Quick add input
-    const quick = document.getElementById('studentQuick');
-    quick.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ const v = quick.value.trim(); if(v){ quickAdd(v); quick.value=''; } }});
-    document.getElementById('btnQuickAdd').addEventListener('click', ()=>{ const v = quick.value.trim(); if(!v) return; quickAdd(v); quick.value=''; });
-
-    // Search (debounced)
-    const searchInput = document.getElementById('globalSearch');
-    let searchTimer = null;
-    searchInput.addEventListener('input', (e)=>{
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(()=> runSearch(e.target.value.trim()), 180);
-    });
-
-    // Students list delegation
-    document.getElementById('studentsList').addEventListener('click', (e)=>{
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const action = btn.dataset.action;
-      const id = btn.dataset.id;
-      if(action === 'delete'){
-        if(!confirm('Sigur vrei să ștergi acest elev?')) return;
-        const next = getStudents().filter(x=>x.id !== id);
-        save(STORAGE_KEYS.students, next);
-        logActivity('Un elev a fost șters din listă.');
-        renderAll();
-      } else if(action === 'edit'){
-        const obj = getStudents().find(x=>x.id === id);
-        openModal('Editează elev', obj.name, (value)=>{
-          if(!value) return;
-          const next = getStudents().map(x => x.id === id ? {...x, name: value.trim()} : x);
-          save(STORAGE_KEYS.students, next);
-          logActivity(`Numele elevului a fost modificat în "${value.trim()}".`);
-          renderAll();
-        });
-      }
-    });
-
-    // settings
-    document.getElementById('openSettings').addEventListener('click', ()=>{
-      const s = getSettings();
-      const newName = prompt('Numele clasei:', s.className);
-      if(newName === null) return;
-      const lessons = prompt('Număr lecții/zi:', String(s.lessonsPerDay));
-      if(lessons === null) return;
-      const next = { ...s, className: newName.trim() || s.className, lessonsPerDay: Number(lessons) || s.lessonsPerDay };
-      setSettings(next); logActivity('Setările au fost salvate.'); renderAll();
-    });
-
-    // toggle detail panel (demo)
-    document.getElementById('toggleView').addEventListener('click', ()=>{
-      const p = document.getElementById('detailPanel');
-      const hidden = p.classList.toggle('hidden');
-      p.setAttribute('aria-hidden', String(hidden));
-      document.getElementById('toggleView').setAttribute('aria-pressed', String(!hidden));
-    });
-
-    // modal ESC cancel fallback
-    dialogEl.addEventListener('cancel', (e) => { e.preventDefault(); dialogEl.close(); });
-  }
-
-  function runSearch(query){
-    const q = query.toLowerCase();
-    const container = document.getElementById('studentsList');
-    if(!q){ renderStudents(); return; }
-    const matches = getStudents().filter(s => s.name.toLowerCase().includes(q));
-    container.innerHTML = '';
-    if(!matches.length){ container.innerHTML = '<div class="empty">Niciun elev găsit.</div>'; return; }
-    matches.forEach(s=>{
-      const li = document.createElement('div');
-      li.className = 'student-item';
-      li.innerHTML = `<div class="left"><div class="avatar">${s.name.split(' ').map(x=>x[0]||'').slice(0,2).join('')}</div><div><div class="student-name">${escapeHtml(s.name)}</div></div></div><div class="student-actions"><button data-action="edit" data-id="${s.id}">✏️</button><button data-action="delete" data-id="${s.id}">🗑️</button></div>`;
-      container.appendChild(li);
-    });
-  }
-
-  /* Legacy render placeholders (kept minimal but available) */
-  function renderAbsences(){}
-  function renderLate(){}
-  function renderDuty(){}
-  function renderReports(){}
-
-  function renderAll(){
-    renderHeader();
-    renderStats();
-    renderRecent();
-    renderStudents();
-    renderAbsences(); renderLate(); renderDuty(); renderReports();
-  }
-
-  /* Export / reset helpers (kept from original) */
-  function exportCsv(){
-    const rows=[['Data','Elev','Tip','Lecții','Notă']]; const abs = getAbsences(); const map = getStudentMap();
-    abs.forEach(item=> rows.push([item.date,map[item.student]||'', item.fullDay?'Zi întreagă':'Lecții selectate', item.fullDay?'Toată ziua':(item.lessons||[]).join(' | '), item.note||'']));
-    const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const b=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(b); const a=document.createElement('a'); a.href=url; a.download='raport_absente.csv'; a.click(); URL.revokeObjectURL(url);
-  }
-  function printReport(){ window.print(); }
-  function resetAllData(){
-    if(!confirm('Sigur vrei să resetezi toate datele?')) return;
-    save(STORAGE_KEYS.students,[]); save(STORAGE_KEYS.absences,[]); save(STORAGE_KEYS.tardiness,[]); save(STORAGE_KEYS.duty,[]); save(STORAGE_KEYS.settings, defaultSettings); save(STORAGE_KEYS.activity,[]);
-    logActivity('Toate datele au fost resetate.'); seedData(); renderAll();
-  }
-
-  function getStudentMap(){ return getStudents().reduce((acc,s)=>{ acc[s.id] = s.name; return acc }, {}); }
-
-  /* Init */
-  seedData();
-  bind();
-  renderAll();
-
-  /* Expose for debugging */
-  window._catalog = { getStudents, getAbsences, getLate, getDuty, renderAll, exportCsv, resetAllData };
-  </script>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-head"><div><h3>📚 Orarul de astăzi</h3><p>Apasă pe o lecție pentru a marca absențele.</p></div><button class="btn btn-light btn-sm" onclick="showPage('schedule')">Tot orarul ↗</button></div><div id="todayLessons" class="lesson-list"></div></div>
+      <div class="panel"><div class="panel-head"><div><h3>✦ Elevi de serviciu</h3><p>Poți schimba lista oricând.</p></div><button class="btn btn-light btn-sm" onclick="showPage('duty')">Editează</button></div><div id="dashboardDuty" class="quick-list"></div></div>
+    </div>
+    <div class="panel"><div class="panel-head"><div><h3>⚠️ Elevi cu absențe astăzi</h3><p>Se actualizează automat după fiecare lecție.</p></div><button class="btn btn-light btn-sm" onclick="showPage('attendance')">Vezi prezența</button></div><div id="dashboardAbsences" class="quick-list"><div class="empty">Nu ai înregistrat încă absențe.</div></div></div>
+  </section>
+  <section class="page" id="page-attendance">
+    <h2 class="section-title">Evidența prezenței</h2><p class="section-sub">Alege data și lecția pentru a consulta sau modifica absențele.</p>
+    <div class="panel"><div class="toolbar"><input type="date" class="field" id="attendanceDate"><select class="field" id="attendanceLesson"></select><input class="field search" id="attendanceSearch" placeholder="Caută elev după nume..."><button class="btn btn-primary" id="openAttendance">Deschide catalogul</button></div><div class="notice">Selectează lecția și apasă „Deschide catalogul”. Starea fiecărui elev se salvează separat pentru fiecare lecție și dată.</div><div id="attendanceOverview"></div></div>
+  </section>
+  <section class="page" id="page-schedule">
+    <h2 class="section-title">Orarul școlar</h2><p class="section-sub">Clasa 12U · Apasă pe orice lecție ca să deschizi catalogul și să pui absențe.</p>
+    <div class="panel"><div class="panel-head"><div><h3>Program săptămânal</h3><p>Orele sunt afișate conform imaginilor furnizate.</p></div><button class="btn btn-light btn-sm" onclick="window.print()">Printează orarul</button></div><div id="fullSchedule" class="schedule-grid"></div><div class="footer-note">Lecțiile fără denumire nu sunt afișate.</div></div>
+  </section>
+  <section class="page" id="page-duty">
+    <h2 class="section-title">Elevii de serviciu</h2><p class="section-sub">Alege elevii responsabili pentru ziua curentă. Modificările rămân salvate în browser.</p>
+    <div class="panel"><div class="panel-head"><div><h3>Lista elevilor de serviciu</h3><p>Bifează elevii desemnați pentru serviciu.</p></div><button class="btn btn-light btn-sm" id="clearDuty">Debifează toți</button></div><div class="toolbar"><input id="dutySearch" class="field search" placeholder="Caută elev..."><button class="btn btn-primary" id="saveDuty">Salvează lista</button></div><div id="dutyTable"></div></div>
+  </section>
+</main>
+</div>
+<div class="modal-backdrop" id="attendanceModal"><div class="modal"><div class="modal-head"><div><div class="eyebrow">Catalog de prezență</div><h2 id="modalTitle">Lecție</h2><div class="muted" id="modalSubtitle"></div></div><button class="close" id="closeModal" aria-label="Închide">×</button></div><div class="attendance-summary" id="modalSummary"></div><div class="toolbar"><input id="modalSearch" class="field search" placeholder="Caută elev..."><button class="btn btn-light btn-sm" id="markAllPresent">Toți prezenți</button></div><div class="notice">Alege starea fiecărui elev. „Absent” se înregistrează în raportul clasei pentru lecția selectată.</div><div id="modalStudents"></div><div class="modal-actions"><button class="btn btn-light" id="resetLesson">Resetează lecția</button><button class="btn btn-primary" id="saveAttendance">Salvează prezența</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const students=[
+"BANICA OLEG","BĂLAN NICOLETA","BESPALICO ANDREI","BUDU DIANA","CIOBANU EUGENIU","CUCOȘ NADIA","CURMEI CĂTĂLINA","DRAPAC IULIANA","FALCEA CĂTĂLINA","FILIP ROMAN","FURTUNĂ NICOLAE","GAIBU EUGENIA","GHERȚA NICOLETA","GOREA ALEXANDRINA","GUȚU ALEXANDRU","HACHI NADEJDA","LEAHU REGINA","LUNGU IRAIDA","NICHIFOREAC CĂTĂLINA","PLOP ANNA-MARIA","POPESCU MIHAELA","PUȘCAȘU ANDREEA","RAȚĂ VLAD","ROTARI ALEXANDRINA","SEVERIN SABRINA","SILI ION","STURZA AMELIA","SURDU ANDREEA","TIMUȚĂ LAURA","TRIFAN MĂDĂLINA"];
+const days=[{key:"Lu",name:"Luni",lessons:[["Istoria","08:15–09:00"],["Istoria","09:10–09:55"],["Matematica","10:10–10:55"],["L. și lit. rom.","11:10–11:55"],["L. străină II","12:10–12:55"],["Ed. fiz.","13:05–13:50"],["Informatica","14:00–14:45"]]},{key:"Ma",name:"Marți",lessons:[["Informatica","08:15–09:00"],["Fizica","09:10–09:55"],["L. și lit. rom.","10:10–10:55"],["Matematica","11:10–11:55"],["L. străină II","12:10–12:55"],["Ed. fiz.","13:05–13:50"]]},{key:"Mi",name:"Miercuri",lessons:[["EPS","08:15–09:00"],["Geografia","09:10–09:55"],["L. și lit. rom.","10:10–10:55"],["Lit. univ.","11:10–11:55"],["Fizica","12:10–12:55"],["L. străină I","13:05–13:50"]]},{key:"Jo",name:"Joi",lessons:[["L. și lit. rom.","08:15–09:00"],["Opțional","09:10–09:55"],["L. străină I","10:10–10:55"],["Lit. univ.","11:10–11:55"],["Dezv. pers.","12:10–12:55"]]},{key:"Vi",name:"Vineri",lessons:[["Istoria","08:15–09:00"],["Matematica","09:10–09:55"],["Biologie","10:10–10:55"],["L. și lit. rom.","11:10–11:55"],["L. străină I","12:10–12:55"],["Chimie","13:05–13:50"]]}];
+const KEY="classhub_12u_v1";
+let store=loadStore(), currentLesson=null;
+function loadStore(){try{return JSON.parse(localStorage.getItem(KEY))||{attendance:{},duty:[]}}catch(e){return {attendance:{},duty:[]}}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(store));updateDashboard()}
+function todayISO(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function initials(name){return name.split(" ").map(x=>x[0]).slice(0,2).join("")}
+function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
+function attendanceKey(date,dayIndex,lessonIndex){return `${date}|${dayIndex}|${lessonIndex}`}
+function recordFor(date,di,li){return store.attendance[attendanceKey(date,di,li)]||{}}
+function getDayIndex(date){let d=new Date(date+"T12:00:00").getDay();return d===0?6:d-1}
+function todayLessonCount(){let di=getDayIndex(todayISO());return di<5?days[di].lessons.length:0}
+function showPage(name){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById("page-"+name).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));const titles={dashboard:"Bun venit în ClassHub 👋",attendance:"Evidența prezenței",schedule:"Orarul școlar",duty:"Elevii de serviciu"};document.getElementById("pageTitle").textContent=titles[name];if(name==="attendance")renderAttendanceOverview();if(name==="duty")renderDuty()}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function renderSchedule(){let html="";days.forEach((day,di)=>{html+=`<div class="day-col"><h4>${day.name}<span>${day.lessons.length} lecții</span></h4>`;day.lessons.forEach((l,li)=>html+=`<div class="schedule-lesson" role="button" tabindex="0" onclick="openLesson(${di},${li},document.getElementById('attendanceDate').value||todayISO())" onkeydown="if(event.key==='Enter')openLesson(${di},${li},document.getElementById('attendanceDate').value||todayISO())"><strong>${esc(l[0])}</strong><small>${l[1]} · Lecția ${li+1}</small></div>`);html+="</div>"});document.getElementById("fullSchedule").innerHTML=html}
+function renderTodayLessons(){let di=getDayIndex(todayISO()),el=document.getElementById("todayLessons");if(di>4){el.innerHTML='<div class="empty">Astăzi nu sunt lecții în orarul de luni–vineri.</div>';return}el.innerHTML=days[di].lessons.map((l,li)=>`<div class="lesson" role="button" tabindex="0" onclick="openLesson(${di},${li},todayISO())"><div class="lesson-time">${l[1]}</div><div class="lesson-number">${li+1}</div><div class="lesson-info"><strong>${esc(l[0])}</strong><small>Apasă pentru prezență</small></div><span class="arrow">›</span></div>`).join("")}
+function renderDuty(){let q=(document.getElementById("dutySearch")?.value||"").toLocaleLowerCase("ro");let selected=new Set(store.duty);let arr=students.map((n,i)=>({n,i})).filter(x=>x.n.toLocaleLowerCase("ro").includes(q));document.getElementById("dutyTable").innerHTML=`<div class="table-wrap"><table><thead><tr><th>Elev</th><th>De serviciu</th></tr></thead><tbody>${arr.map(x=>`<tr><td><div class="student-cell"><span class="avatar">${initials(x.n)}</span>${esc(x.n)}</div></td><td><input class="check duty-check" type="checkbox" data-index="${x.i}" ${selected.has(x.i)?"checked":""} aria-label="Selectează ${esc(x.n)}"></td></tr>`).join("")}</tbody></table></div>`}
+function saveDuty(){store.duty=[...document.querySelectorAll(".duty-check:checked")].map(x=>Number(x.dataset.index));persist();renderDuty();renderDashboardDuty();toast("Lista elevilor de serviciu a fost salvată.")}
+function renderDashboardDuty(){let el=document.getElementById("dashboardDuty");if(!store.duty.length){el.innerHTML='<div class="empty">Nu ai selectat încă elevii de serviciu.<br><button class="btn btn-light btn-sm" style="margin-top:10px" onclick="showPage(\\'duty\\')">Alege elevii</button></div>';return}el.innerHTML=store.duty.map(i=>`<div class="quick-item"><div class="avatar">${initials(students[i])}</div><div><strong>${esc(students[i])}</strong><small>Elev de serviciu</small></div><span class="badge green status">Activ</span></div>`).join("")}
+function renderAttendanceSelect(){let sel=document.getElementById("attendanceLesson"),di=getDayIndex(document.getElementById("attendanceDate").value||todayISO());sel.innerHTML=di<5?days[di].lessons.map((l,i)=>`<option value="${di},${i}">Lecția ${i+1} — ${esc(l[0])} (${l[1]})</option>`).join(""):'<option value="">Nu sunt lecții în weekend</option>';renderAttendanceOverview()}
+function renderAttendanceOverview(){let date=document.getElementById("attendanceDate").value||todayISO(),di=getDayIndex(date),q=(document.getElementById("attendanceSearch").value||"").toLocaleLowerCase("ro"),el=document.getElementById("attendanceOverview");if(di>4){el.innerHTML='<div class="empty">Alege o zi de luni până vineri pentru a vedea lecțiile.</div>';return}let rows=days[di].lessons.map((l,li)=>{let rec=recordFor(date,di,li),abs=students.filter((s,i)=>rec[i]==="absent").length,marked=Object.keys(rec).length;return `<div class="lesson" style="margin-bottom:9px"><div class="lesson-time">${l[1]}</div><div class="lesson-number">${li+1}</div><div class="lesson-info"><strong>${esc(l[0])}</strong><small>${marked?`${marked} elevi verificați · ${abs} absenți`:"Prezența nu a fost completată"}</small></div><button class="btn btn-primary btn-sm" onclick="openLesson(${di},${li},'${date}')">Catalog</button></div>`}).join("");let absences={};days[di].lessons.forEach((l,li)=>Object.entries(recordFor(date,di,li)).forEach(([i,v])=>{if(v==="absent")absences[i]=(absences[i]||0)+1}));let absentRows=Object.entries(absences).filter(([i])=>students[i].toLocaleLowerCase("ro").includes(q));el.innerHTML=`<div class="attendance-summary"><span class="summary-chip">📅 ${date}</span><span class="summary-chip">👥 ${students.length} elevi</span><span class="summary-chip">🔴 ${Object.keys(absences).length} elevi cu absențe</span></div><h3 style="font-size:14px">Lecțiile zilei</h3>${rows}<h3 style="font-size:14px;margin-top:24px">Raport absențe</h3>${absentRows.length?`<div class="table-wrap"><table><thead><tr><th>Elev</th><th>Absențe în ziua selectată</th></tr></thead><tbody>${absentRows.map(([i,c])=>`<tr><td><div class="student-cell"><span class="avatar">${initials(students[i])}</span>${esc(students[i])}</div></td><td><span class="badge red">${c} lecție/lecții</span></td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Nu sunt absențe înregistrate pentru această zi.</div>'}`}
+function openLesson(di,li,date){currentLesson={di,li,date};let lesson=days[di].lessons[li],rec=recordFor(date,di,li);document.getElementById("modalTitle").textContent=`Lecția ${li+1} — ${lesson[0]}`;document.getElementById("modalSubtitle").textContent=`${days[di].name} · ${date} · ${lesson[1]}`;document.getElementById("modalSearch").value="";renderModalStudents(rec);document.getElementById("attendanceModal").classList.add("open")}
+function renderModalStudents(rec){let q=(document.getElementById("modalSearch").value||"").toLocaleLowerCase("ro"),arr=students.map((n,i)=>({n,i})).filter(x=>x.n.toLocaleLowerCase("ro").includes(q));document.getElementById("modalStudents").innerHTML=arr.map(x=>`<div class="student-attendance" data-student="${x.i}"><div class="name"><span class="avatar">${initials(x.n)}</span>${esc(x.n)}</div><select class="field status-select" data-index="${x.i}" aria-label="Prezență ${esc(x.n)}"><option value="present" ${(rec[x.i]||"present")==="present"?"selected":""}>✓ Prezent</option><option value="absent" ${rec[x.i]==="absent"?"selected":""}>✕ Absent</option><option value="late" ${rec[x.i]==="late"?"selected":""}>◷ Întârziat</option><option value="excused" ${rec[x.i]==="excused"?"selected":""}>◇ Motivat</option></select></div>`).join("");updateModalSummary()}
+function updateModalSummary(){let selects=[...document.querySelectorAll(".status-select")],counts={present:0,absent:0,late:0,excused:0};selects.forEach(s=>counts[s.value]++);document.getElementById("modalSummary").innerHTML=`<span class="summary-chip">✓ Prezenți: ${counts.present}</span><span class="summary-chip">✕ Absenți: ${counts.absent}</span><span class="summary-chip">◷ Întârziați: ${counts.late}</span><span class="summary-chip">◇ Motivați: ${counts.excused}</span>`}
+function saveAttendance(){if(!currentLesson)return;let k=attendanceKey(currentLesson.date,currentLesson.di,currentLesson.li),rec=recordFor(currentLesson.date,currentLesson.di,currentLesson.li);document.querySelectorAll(".status-select").forEach(s=>rec[s.dataset.index]=s.value);store.attendance[k]=rec;persist();document.getElementById("attendanceModal").classList.remove("open");renderAttendanceOverview();toast("Prezența a fost salvată cu succes.")}
+function updateDashboard(){let date=todayISO(),di=getDayIndex(date),absent=new Set(),markedAny=new Set();if(di<5)days[di].lessons.forEach((l,li)=>Object.entries(recordFor(date,di,li)).forEach(([i,v])=>{markedAny.add(i);if(v==="absent")absent.add(i)}));document.getElementById("statTotal").textContent=students.length;document.getElementById("statPresent").textContent=markedAny.size?students.length-absent.size:"—";document.getElementById("statAbsent").textContent=absent.size;document.getElementById("statLessons").textContent=todayLessonCount();let el=document.getElementById("dashboardAbsences");el.innerHTML=absent.size?[...absent].map(i=>`<div class="quick-item"><div class="avatar">${initials(students[i])}</div><div><strong>${esc(students[i])}</strong><small>Absent la cel puțin o lecție astăzi</small></div><span class="badge red status">Absent</span></div>`).join(""):'<div class="empty">Nu ai înregistrat încă absențe.</div>';renderDashboardDuty()}
+document.getElementById("todayDate").textContent=new Intl.DateTimeFormat("ro-RO",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).format(new Date());
+document.getElementById("attendanceDate").value=todayISO();
+document.getElementById("attendanceDate").addEventListener("change",renderAttendanceSelect);
+document.getElementById("attendanceSearch").addEventListener("input",renderAttendanceOverview);
+document.getElementById("openAttendance").addEventListener("click",()=>{let v=document.getElementById("attendanceLesson").value;if(!v){toast("Alege o zi de luni până vineri.");return}let [di,li]=v.split(",").map(Number);openLesson(di,li,document.getElementById("attendanceDate").value||todayISO())});
+document.getElementById("dutySearch").addEventListener("input",renderDuty);
+document.getElementById("saveDuty").addEventListener("click",saveDuty);
+document.getElementById("clearDuty").addEventListener("click",()=>{store.duty=[];persist();renderDuty();toast("Lista de serviciu a fost debifată.")});
+document.getElementById("modalSearch").addEventListener("input",()=>{let rec=recordFor(currentLesson.date,currentLesson.di,currentLesson.li);renderModalStudents(rec)});
+document.getElementById("modalStudents").addEventListener("change",e=>{if(e.target.classList.contains("status-select"))updateModalSummary()});
+document.getElementById("closeModal").addEventListener("click",()=>document.getElementById("attendanceModal").classList.remove("open"));
+document.getElementById("attendanceModal").addEventListener("click",e=>{if(e.target.id==="attendanceModal")e.target.classList.remove("open")});
+document.getElementById("saveAttendance").addEventListener("click",saveAttendance);
+document.getElementById("markAllPresent").addEventListener("click",()=>{document.querySelectorAll(".status-select").forEach(s=>s.value="present");updateModalSummary()});
+document.getElementById("resetLesson").addEventListener("click",()=>{if(!currentLesson)return;delete store.attendance[attendanceKey(currentLesson.date,currentLesson.di,currentLesson.li)];persist();renderModalStudents({});toast("Prezența pentru această lecție a fost resetată.")});
+renderSchedule();renderTodayLessons();renderAttendanceSelect();renderDuty();updateDashboard();
+</script>
 </body>
 </html>
