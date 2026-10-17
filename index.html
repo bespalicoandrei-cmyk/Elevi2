@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalogul Meu | Panou de administrare</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --bg-soft: #eef3ff;
+      --panel: rgba(255,255,255,0.9);
+      --panel-strong: #ffffff;
+      --primary: #5b6cff;
+      --primary-deep: #3f52d9;
+      --secondary: #7c3aed;
+      --success: #18b77d;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #172033;
+      --muted: #667085;
+      --line: rgba(15, 23, 42, 0.08);
+      --shadow: 0 18px 40px rgba(21, 31, 54, 0.08);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --sidebar-width: 270px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Tahoma, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(91, 108, 255, 0.12), transparent 30%),
+        linear-gradient(135deg, #f2f5ff 0%, #f5f7fb 100%);
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--line);
+      padding: 22px 18px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 10px 20px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 12px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 1.4rem;
+      box-shadow: 0 12px 20px rgba(91,108,255,0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .nav-item {
+      border: none;
+      background: transparent;
+      padding: 12px 14px;
+      border-radius: 12px;
+      text-align: left;
+      color: #24304a;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-item:hover {
+      background: rgba(91,108,255,0.07);
+      transform: translateX(2px);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(91,108,255,0.12), rgba(124,58,237,0.08));
+      box-shadow: inset 0 0 0 1px rgba(91,108,255,0.09);
+      color: var(--primary-deep);
+    }
+
+    .nav-item .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: rgba(91,108,255,0.08);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .nav-item.active .num {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 10px 6px;
+      color: var(--muted);
+      font-size: 0.77rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .main {
+      flex: 1;
+      padding: 24px 28px 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      letter-spacing: -0.02em;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: min(380px, 100%);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+      padding: 12px 14px 12px 42px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .search-wrap input:focus {
+      border-color: rgba(91,108,255,0.5);
+      box-shadow: 0 0 0 4px rgba(91,108,255,0.08);
+    }
+
+    .search-wrap::before {
+      content: "⌕";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1.2rem;
+    }
+
+    .content {
+      min-height: 70vh;
+    }
+
+    .section {
+      display: block;
+    }
+
+    .section.hidden {
+      display: none;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      padding: 20px 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.78));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 14px;
+      font-size: clamp(2rem, 3vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    form {
+      display: block;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #2c3a53;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(246,249,255,0.9);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+      transition: 0.2s ease;
+      color: var(--text);
+    }
+
+    .field textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(91,108,255,0.6);
+      box-shadow: 0 0 0 4px rgba(91,108,255,0.08);
+      background: #fff;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #2d3a4f;
+      margin-bottom: 12px;
+    }
+
+    .check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 10px 18px rgba(91, 108, 255, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(91,108,255,0.08);
+      color: var(--primary-deep);
+    }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.09);
+      color: var(--danger);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    thead th {
+      background: rgba(246,249,255,0.9);
+      color: #465770;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      vertical-align: top;
+      color: #1e2a3a;
+    }
+
+    tbody tr:hover {
+      background: rgba(91,108,255,0.02);
+    }
+
+    .small-btn {
+      padding: 8px 10px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(91,108,255,0.08);
+      color: var(--primary-deep);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .danger-btn {
+      background: rgba(239,68,68,0.08);
+      color: var(--danger);
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 18px;
+    }
+
+    .grid-7 {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(90px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .duty-day {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 10px;
+      background: linear-gradient(180deg, #fff 0%, #f8f9ff 100%);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .duty-day .date {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .duty-day .name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .duty-day.empty .name {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .students-wrap {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .student-list .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(91,108,255,0.08);
+      color: var(--primary-deep);
+      font-weight: 700;
+      font-size: 0.74rem;
+    }
+
+    .calendar-box {
+      background: linear-gradient(180deg, #fff, #f8f9ff);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .filters .field {
+      min-width: 180px;
+      margin-bottom: 0;
+    }
+
+    .report-box {
+      background: linear-gradient(180deg, #ffffff, #f7f9ff);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .mini-box {
+      background: rgba(91,108,255,0.04);
+      border: 1px solid rgba(91,108,255,0.1);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .mini-box h4 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mini-box strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.6rem;
+      letter-spacing: -0.04em;
+    }
+
+    @media (max-width: 1120px) {
+      .stat-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+      .two-col, .students-wrap { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 820px) {
+      .app { display: block; }
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+      .main { padding: 18px 16px 26px; }
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-wrap { width: 100%; }
+      .grid-7 { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+    }
+
+    @media (max-width: 540px) {
+      .stat-grid { grid-template-columns: 1fr; }
+      .grid-7 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">📚</div>
+        <div>
+          <h1>Catalogul Meu</h1>
+          <small>Panou de administrare</small>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Meniul principal">
+        <button class="nav-item active" data-target="dashboard"><span class="num">1</span>Panou principal</button>
+        <button class="nav-item" data-target="absences"><span class="num">2</span>Absențe</button>
+        <button class="nav-item" data-target="tardiness"><span class="num">3</span>Întârzieri</button>
+        <button class="nav-item" data-target="duty"><span class="num">4</span>Elevul de serviciu</button>
+        <button class="nav-item" data-target="students"><span class="num">5</span>Lista elevilor</button>
+        <button class="nav-item" data-target="calendar"><span class="num">6</span>Calendar</button>
+        <button class="nav-item" data-target="reports"><span class="num">7</span>Rapoarte</button>
+        <button class="nav-item" data-target="settings"><span class="num">8</span>Setări</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        Demo local • design modern • HTML pur
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h2 id="schoolTitle">Clasa: —</h2>
+        <div class="search-wrap">
+          <input id="globalSearch" type="text" placeholder="Caută elev..." />
+        </div>
+      </header>
+
+      <div class="content">
+        <section id="dashboard" class="section">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <h3>Numărul elevilor</h3>
+              <div class="stat-value" id="countStudents">0</div>
+            </div>
+
+            <div class="stat-card">
+              <h3>Elevi prezenți</h3>
+              <div class="stat-value" id="countPresent">0</div>
+            </div>
+
+            <div class="stat-card">
+              <h3>Elevi absenți</h3>
+              <div class="stat-value" id="countAbsent">0</div>
+            </div>
+
+            <div class="stat-card">
+              <h3>Elevi întârziați</h3>
+              <div class="stat-value" id="countLate">0</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Activități recente</h3>
+            </div>
+            <div id="recentList" class="subtle">Nicio activitate încă.</div>
+          </div>
+        </section>
+
+        <section id="absences" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Absențe</h3>
+              <span class="subtle">Înregistrare și istoric</span>
+            </div>
+
+            <div class="two-col">
+              <form id="absenceForm">
+                <div class="field">
+                  <label for="absenceStudent">Elev</label>
+                  <select id="absenceStudent" required></select>
+                </div>
+
+                <div class="field">
+                  <label for="absenceDate">Dată</label>
+                  <input id="absenceDate" type="date" required />
+                </div>
+
+                <div class="check">
+                  <input id="absenceFullDay" type="checkbox" />
+                  <label for="absenceFullDay">Absență pentru toată ziua</label>
+                </div>
+
+                <div class="field">
+                  <label for="absenceLessons">Lecțiile selectate</label>
+                  <select id="absenceLessons" multiple size="5"></select>
+                </div>
+
+                <div class="field">
+                  <label for="absenceNote">Notă / motiv</label>
+                  <textarea id="absenceNote" placeholder="Ex: motiv medical, eveniment familial..."></textarea>
+                </div>
+
+                <div class="btn-row">
+                  <button type="submit" class="btn btn-primary">Înregistrează</button>
+                  <button type="button" class="btn btn-secondary" id="clearAbsenceHistory">Golește istoric</button>
+                </div>
+              </form>
+
+              <div>
+                <div class="panel-header" style="margin-top:0">
+                  <h3>Istoricul absențelor</h3>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Dată</th>
+                        <th>Elev</th>
+                        <th>Lecții</th>
+                        <th>Tip</th>
+                        <th>Notă</th>
+                        <th>Acțiune</th>
+                      </tr>
+                    </thead>
+                    <tbody id="absencesTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tardiness" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Întârzieri</h3>
+              <span class="subtle">Înregistrare și evidență</span>
+            </div>
+
+            <div class="two-col">
+              <form id="lateForm">
+                <div class="field">
+                  <label for="lateStudent">Elev</label>
+                  <select id="lateStudent" required></select>
+                </div>
+
+                <div class="field">
+                  <label for="lateDate">Dată</label>
+                  <input id="lateDate" type="date" required />
+                </div>
+
+                <div class="field">
+                  <label for="lateLesson">Lecția</label>
+                  <select id="lateLesson" required></select>
+                </div>
+
+                <div class="field">
+                  <label for="lateMinutes">Minute întârziere</label>
+                  <input id="lateMinutes" type="number" min="1" step="1" value="10" required />
+                </div>
+
+                <div class="field">
+                  <label for="lateNote">Notă</label>
+                  <textarea id="lateNote" placeholder="Ex: trafic, întârziere cauzată de familie..."></textarea>
+                </div>
+
+                <div class="btn-row">
+                  <button type="submit" class="btn btn-primary">Adaugă întârziere</button>
+                </div>
+              </form>
+
+              <div>
+                <div class="panel-header" style="margin-top:0">
+                  <h3>Istoricul întârzierilor</h3>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Dată</th>
+                        <th>Elev</th>
+                        <th>Lecția</th>
+                        <th>Minute</th>
+                        <th>Notă</th>
+                        <th>Acțiune</th>
+                      </tr>
+                    </thead>
+                    <tbody id="lateTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="duty" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Elevul de serviciu</h3>
+              <span class="subtle">Azi: <strong id="todayDutyLabel">—</strong></span>
+            </div>
+
+            <div class="students-wrap">
+              <div>
+                <div class="field">
+                  <label for="dutySelect">Alege elevul de serviciu</label>
+                  <select id="dutySelect"></select>
+                </div>
+
+                <div class="btn-row">
+                  <button class="btn btn-primary" id="setDutyBtn">Setează pentru azi</button>
+                </div>
+              </div>
+
+              <div>
+                <div class="panel-header" style="margin-top:0">
+                  <h3>Program pentru săptămână</h3>
+                </div>
+                <div class="grid-7" id="weeklyDutyGrid"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <div class="panel-header" style="margin-top:0">
+                <h3>Istoricul elevilor de serviciu</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Elev</th>
+                      <th>Acțiune</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dutyTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="students" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Lista elevilor</h3>
+              <span class="subtle">Adăugare, căutare, editare și ștergere</span>
+            </div>
+
+            <div class="students-wrap">
+              <div>
+                <form id="studentForm">
+                  <div class="field">
+                    <label for="studentName">Nume elev</label>
+                    <input id="studentName" type="text" placeholder="Ex: Popescu Maria" required />
+                  </div>
+                  <div class="btn-row">
+                    <button class="btn btn-primary" type="submit">Adaugă elev</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="student-list">
+                <div class="head">
+                  <h3 style="margin:0;">Elevi înregistrați</h3>
+                  <span class="badge" id="studentCountBadge">0</span>
+                </div>
+
+                <div class="field">
+                  <input id="studentSearch" type="text" placeholder="Caută elev..." />
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Nume</th>
+                        <th>Acțiuni</th>
+                      </tr>
+                    </thead>
+                    <tbody id="studentsTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="calendar" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Calendar</h3>
+            </div>
+
+            <div class="filters">
+              <div class="field">
+                <label for="calendarDate">Alege data</label>
+                <input id="calendarDate" type="date" />
+              </div>
+              <div class="btn-row" style="margin:0">
+                <button id="calendarShowBtn" class="btn btn-primary">Afișează ziua</button>
+              </div>
+            </div>
+
+            <div class="calendar-box" id="calendarOutput">
+              Selectează o dată pentru a vedea absențele și întârzierile din ziua respectivă.
+            </div>
+          </div>
+        </section>
+
+        <section id="reports" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Rapoarte</h3>
+            </div>
+
+            <div class="filters">
+              <div class="field">
+                <label for="reportFrom">De la</label>
+                <input id="reportFrom" type="date" />
+              </div>
+              <div class="field">
+                <label for="reportTo">Până la</label>
+                <input id="reportTo" type="date" />
+              </div>
+              <div class="field">
+                <label for="reportType">Tip raport</label>
+                <select id="reportType">
+                  <option value="daily">Absențe zilnice</option>
+                  <option value="weekly">Absențe săptămânale</option>
+                  <option value="monthly">Absențe lunare</option>
+                </select>
+              </div>
+              <div class="btn-row" style="margin:0">
+                <button id="exportCsvBtn" class="btn btn-primary">Export CSV</button>
+                <button id="printReportBtn" class="btn btn-secondary">Print / PDF</button>
+              </div>
+            </div>
+
+            <div class="report-box">
+              <div id="reportSummary"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="settings" class="section hidden">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Setări</h3>
+            </div>
+
+            <form id="settingsForm">
+              <div class="field">
+                <label for="classNameInput">Numele clasei</label>
+                <input id="classNameInput" type="text" placeholder="Ex: Clasa a IX-a A" />
+              </div>
+
+              <div class="field">
+                <label for="lessonsPerDayInput">Numărul de lecții pe zi</label>
+                <input id="lessonsPerDayInput" type="number" min="1" max="12" value="4" />
+              </div>
+
+              <div class="btn-row">
+                <button type="submit" class="btn btn-primary">Salvează</button>
+                <button type="button" class="btn btn-danger" id="resetAllDataBtn">Resetează datele</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      students: 'catalog_students',
+      absences: 'catalog_absences',
+      tardiness: 'catalog_tardiness',
+      duty: 'catalog_duty',
+      settings: 'catalog_settings',
+      activity: 'catalog_activity'
+    };
+
+    const defaultSettings = {
+      className: 'Clasa a IX-a A',
+      lessonsPerDay: 4
+    };
+
+    const sampleStudents = [
+      'Popescu Maria',
+      'Ionescu Andrei',
+      'Dumitru Elena',
+      'Georgescu Mihai',
+      'Vasilescu Ana',
+      'Constantin David'
+    ];
+
+    function load(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v ? JSON.parse(v) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function save(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function getStudents() {
+      return load(STORAGE_KEYS.students, []);
+    }
+
+    function getSettings() {
+      return { ...defaultSettings, ...load(STORAGE_KEYS.settings, defaultSettings) };
+    }
+
+    function setSettings(next) {
+      save(STORAGE_KEYS.settings, next);
+    }
+
+    function getAbsences() {
+      return load(STORAGE_KEYS.absences, []);
+    }
+
+    function getLate() {
+      return load(STORAGE_KEYS.tardiness, []);
+    }
+
+    function getDuty() {
+      return load(STORAGE_KEYS.duty, []);
+    }
+
+    function logActivity(text) {
+      const entries = load(STORAGE_KEYS.activity, []);
+      entries.unshift({ id: uid(), text, time: Date.now() });
+      save(STORAGE_KEYS.activity, entries.slice(0, 12));
+    }
+
+    function seedData() {
+      if (!localStorage.getItem(STORAGE_KEYS.students)) {
+        const students = sampleStudents.map((name, index) => ({
+          id: uid() + '-' + index,
+          name,
+          createdAt: Date.now()
+        }));
+        save(STORAGE_KEYS.students, students);
+      }
+
+      if (!localStorage.getItem(STORAGE_KEYS.settings)) {
+        save(STORAGE_KEYS.settings, defaultSettings);
+      }
+
+      if (!localStorage.getItem(STORAGE_KEYS.activity)) {
+        save(STORAGE_KEYS.activity, [{ id: uid(), text: 'Aplicația a fost inițializată.', time: Date.now() }]);
+      }
+    }
+
+    function getStudentMap() {
+      return getStudents().reduce((acc, student) => {
+        acc[student.id] = student.name;
+        return acc;
+      }, {});
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function renderSettings() {
+      const settings = getSettings();
+      document.getElementById('schoolTitle').textContent = 'Clasa: ' + settings.className;
+      document.getElementById('classNameInput').value = settings.className;
+      document.getElementById('lessonsPerDayInput').value = settings.lessonsPerDay;
+      renderLessonOptions();
+    }
+
+    function renderLessonOptions() {
+      const settings = getSettings();
+      const count = Number(settings.lessonsPerDay) || 4;
+
+      const selects = [
+        document.getElementById('absenceLessons'),
+        document.getElementById('lateLesson')
+      ];
+
+      selects.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '';
+        for (let i = 1; i <= count; i++) {
+          const option = document.createElement('option');
+          option.value = String(i);
+          option.textContent = 'Lecția ' + i;
+          select.appendChild(option);
+        }
+      });
+    }
+
+    function renderStudentOptions() {
+      const students = getStudents();
+      const selectors = [
+        document.getElementById('absenceStudent'),
+        document.getElementById('lateStudent'),
+        document.getElementById('dutySelect')
+      ];
+
+      selectors.forEach(select => {
+        if (!select) return;
+        select.innerHTML = '<option value="">Selectează</option>';
+        students.forEach(student => {
+          const option = document.createElement('option');
+          option.value = student.id;
+          option.textContent = student.name;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    function renderDashboard() {
+      const students = getStudents();
+      const absences = getAbsences();
+      const tardiness = getLate();
+
+      const today = new Date().toISOString().split('T')[0];
+      const presentCount = students.length - absences.filter(item => item.date === today && item.fullDay).length;
+
+      document.getElementById('countStudents').textContent = students.length;
+      document.getElementById('countPresent').textContent = Math.max(presentCount, 0);
+      document.getElementById('countAbsent').textContent = absences.filter(item => item.date === today).length;
+      document.getElementById('countLate').textContent = tardiness.filter(item => item.date === today).length;
+
+      const recent = load(STORAGE_KEYS.activity, []);
+      const list = document.getElementById('recentList');
+      list.innerHTML = '';
+
+      if (!recent.length) {
+        list.textContent = 'Nicio activitate încă.';
+        return;
+      }
+
+      recent.slice(0, 6).forEach(item => {
+        const row = document.createElement('div');
+        row.style.padding = '10px 0';
+        row.style.borderBottom = '1px solid rgba(15,23,42,0.06)';
+        row.style.color = '#1e2a3a';
+        row.textContent = `${new Date(item.time).toLocaleString('ro-RO')} — ${item.text}`;
+        list.appendChild(row);
+      });
+    }
+
+    function renderAbsences() {
+      const tbody = document.getElementById('absencesTableBody');
+      const absences = getAbsences().sort((a, b) => b.date.localeCompare(a.date));
+      const studentMap = getStudentMap();
+
+      tbody.innerHTML = '';
+
+      if (!absences.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">Nicio absență înregistrată.</td></tr>';
+        return;
+      }
+
+      absences.forEach(item => {
+        const row = document.createElement('tr');
+
+        const lessonText = item.fullDay ? 'Toată ziua' : (item.lessons && item.lessons.length ? item.lessons.join(', ') : '—');
+        const typeText = item.fullDay ? 'Zi întreagă' : 'Lecții selectate';
+
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${studentMap[item.student] || '—'}</td>
+          <td>${lessonText}</td>
+          <td>${typeText}</td>
+          <td>${item.note || '—'}</td>
+          <td>
+            <button class="small-btn danger-btn" data-id="${item.id}">Șterge</button>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+
+      tbody.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const next = getAbsences().filter(item => item.id !== id);
+          save(STORAGE_KEYS.absences, next);
+          logActivity('A fost ștearsă o absență.');
+          renderAll();
+        });
+      });
+    }
+
+    function renderLate() {
+      const tbody = document.getElementById('lateTableBody');
+      const late = getLate().sort((a, b) => b.date.localeCompare(a.date));
+      const studentMap = getStudentMap();
+
+      tbody.innerHTML = '';
+
+      if (!late.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">Nicio întârziere.</td></tr>';
+        return;
+      }
+
+      late.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${studentMap[item.student] || '—'}</td>
+          <td>Lecția ${item.lesson}</td>
+          <td>${item.minutes} min</td>
+          <td>${item.note || '—'}</td>
+          <td>
+            <button class="small-btn danger-btn" data-id="${item.id}">Șterge</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      tbody.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const next = getLate().filter(item => item.id !== id);
+          save(STORAGE_KEYS.tardiness, next);
+          logActivity('A fost ștearsă o întârziere.');
+          renderAll();
+        });
+      });
+    }
+
+    function renderDuty() {
+      const dutyList = getDuty();
+      const studentMap = getStudentMap();
+      const today = new Date().toISOString().split('T')[0];
+      const todayDuty = dutyList.find(item => item.date === today);
+
+      document.getElementById('todayDutyLabel').textContent = todayDuty ? studentMap[todayDuty.student] || '—' : '—';
+
+      const grid = document.getElementById('weeklyDutyGrid');
+      grid.innerHTML = '';
+
+      const start = new Date();
+      const day = start.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      start.setDate(start.getDate() + diff);
+
+      for (let i = 0; i < 7; i++) {
+        const current = new Date(start);
+        current.setDate(start.getDate() + i);
+        const dateStr = current.toISOString().split('T')[0];
+        const assigned = dutyList.find(item => item.date === dateStr);
+
+        const card = document.createElement('div');
+        card.className = 'duty-day' + (assigned ? '' : ' empty');
+        card.innerHTML = `
+          <div class="date">${current.toLocaleDateString('ro-RO', { weekday: 'short', day: '2-digit' })}</div>
+          <div class="name">${assigned ? (studentMap[assigned.student] || '—') : 'Niciun elev'}</div>
+        `;
+        grid.appendChild(card);
+      }
+
+      const tableBody = document.getElementById('dutyTableBody');
+      tableBody.innerHTML = '';
+
+      if (!dutyList.length) {
+        tableBody.innerHTML = '<tr><td colspan="3" class="empty">Nu există elevi de serviciu.</td></tr>';
+        return;
+      }
+
+      [...dutyList].reverse().forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${studentMap[item.student] || '—'}</td>
+          <td><button class="small-btn danger-btn" data-date="${item.date}">Șterge</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      tableBody.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const date = btn.getAttribute('data-date');
+          const next = getDuty().filter(item => item.date !== date);
+          save(STORAGE_KEYS.duty, next);
+          logActivity('A fost șters elevul de serviciu pentru o zi.');
+          renderAll();
+        });
+      });
+    }
+
+    function renderStudents() {
+      const students = getStudents().sort((a, b) => a.name.localeCompare(b.name));
+      const tbody = document.getElementById('studentsTableBody');
+      const badge = document.getElementById('studentCountBadge');
+      badge.textContent = students.length;
+
+      tbody.innerHTML = '';
+
+      if (!students.length) {
+        tbody.innerHTML = '<tr><td colspan="2" class="empty">Nu există elevi.</td></tr>';
+        return;
+      }
+
+      const query = document.getElementById('studentSearch').value.trim().toLowerCase();
+
+      const filtered = students.filter(student => student.name.toLowerCase().includes(query));
+
+      filtered.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>
+            <button class="small-btn" data-action="edit" data-id="${student.id}">Editează</button>
+            <button class="small-btn danger-btn" data-action="delete" data-id="${student.id}">Șterge</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      tbody.querySelectorAll('button').forEach(btn => {
+        const id = btn.getAttribute('data-id');
+        const action = btn.getAttribute('data-action');
+
+        btn.addEventListener('click', () => {
+          if (action === 'delete') {
+            const confirmed = confirm('Sigur vrei să ștergi acest elev?');
+            if (!confirmed) return;
+
+            const next = getStudents().filter(student => student.id !== id);
+            save(STORAGE_KEYS.students, next);
+            logActivity('Un elev a fost șters din listă.');
+            renderAll();
+            return;
+          }
+
+          if (action === 'edit') {
+            const student = getStudents().find(item => item.id === id);
+            const value = prompt('Editează numele elevului:', student.name);
+            if (!value) return;
+
+            const trimmed = value.trim();
+            if (!trimmed) return;
+
+            const next = getStudents().map(item => item.id === id ? { ...item, name: trimmed } : item);
+            save(STORAGE_KEYS.students, next);
+            logActivity(`Numele elevului a fost modificat în "${trimmed}".`);
+            renderAll();
+          }
+        });
+      });
+    }
+
+    function renderCalendar() {
+      const output = document.getElementById('calendarOutput');
+      const selected = document.getElementById('calendarDate').value;
+
+      if (!selected) {
+        output.innerHTML = 'Selectează o dată pentru a vedea absențele și întârzierile din ziua respectivă.';
+        return;
+      }
+
+      const absences = getAbsences().filter(item => item.date === selected);
+      const late = getLate().filter(item => item.date === selected);
+      const studentMap = getStudentMap();
+
+      let HTML = `<h3 style="margin:0 0 10px;">${formatDate(selected)}</h3>`;
+      HTML += `<div style="margin-top:16px;"><strong>Absențe</strong><ul>`;
+      if (!absences.length) {
+        HTML += '<li>Nu există absențe.</li>';
+      } else {
+        absences.forEach(item => {
+          const label = item.fullDay ? 'Toată ziua' : (item.lessons && item.lessons.length ? `Lecții: ${item.lessons.join(', ')}` : 'Lecții: —');
+          HTML += `<li>${studentMap[item.student] || '—'} — ${label}${item.note ? ` — ${item.note}` : ''}</li>`;
+        });
+      }
+      HTML += `</ul></div>`;
+
+      HTML += `<div style="margin-top:14px;"><strong>Întârzieri</strong><ul>`;
+      if (!late.length) {
+        HTML += '<li>Nu există întârzieri.</li>';
+      } else {
+        late.forEach(item => {
+          HTML += `<li>${studentMap[item.student] || '—'} — Lecția ${item.lesson} — ${item.minutes} min${item.note ? ` — ${item.note}` : ''}</li>`;
+        });
+      }
+      HTML += `</ul></div>`;
+
+      output.innerHTML = HTML;
+    }
+
+    function renderReports() {
+      const from = document.getElementById('reportFrom').value;
+      const to = document.getElementById('reportTo').value;
+      const type = document.getElementById('reportType').value;
+      const absences = getAbsences();
+      const studentMap = getStudentMap();
+
+      const filtered = absences.filter(item => {
+        if (!from && !to) return true;
+        if (from && item.date < from) return false;
+        if (to && item.date > to) return false;
+        return true;
+      });
+
+      let summary = '';
+
+      if (type === 'daily') {
+        const byDate = {};
+        filtered.forEach(item => {
+          byDate[item.date] = (byDate[item.date] || 0) + 1;
+        });
+        summary = Object.entries(byDate).map(([date, count]) => `${formatDate(date)}: ${count} absențe`).join('<br>') || 'Nu există date.';
+      } else if (type === 'weekly') {
+        const byWeek = {};
+        filtered.forEach(item => {
+          const d = new Date(item.date + 'T00:00:00');
+          const first = new Date(d);
+          const day = d.getDay() || 7;
+          first.setDate(d.getDate() - (day - 1));
+          const weekKey = first.toISOString().split('T')[0];
+          byWeek[weekKey] = (byWeek[weekKey] || 0) + 1;
+        });
+        summary = Object.entries(byWeek).map(([week, count]) => `${formatDate(week)}: ${count} absențe`).join('<br>') || 'Nu există date.';
+      } else {
+        const byMonth = {};
+        filtered.forEach(item => {
+          const d = new Date(item.date + 'T00:00:00');
+          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          byMonth[key] = (byMonth[key] || 0) + 1;
+        });
+        summary = Object.entries(byMonth).map(([month, count]) => `${month}: ${count} absențe`).join('<br>') || 'Nu există date.';
+      }
+
+      const summaryBox = document.getElementById('reportSummary');
+      const total = filtered.length;
+      const uniqueStudents = new Set(filtered.map(item => item.student)).size;
+      summaryBox.innerHTML = `
+        <div class="report-summary">
+          <div class="mini-box">
+            <h4>Total absențe</h4>
+            <strong>${total}</strong>
+          </div>
+          <div class="mini-box">
+            <h4>Elevi afectați</h4>
+            <strong>${uniqueStudents}</strong>
+          </div>
+          <div class="mini-box">
+            <h4>Tip raport</h4>
+            <strong>${type === 'daily' ? 'Zilnic' : type === 'weekly' ? 'Săptămânal' : 'Lunar'}</strong>
+          </div>
+        </div>
+        <div style="margin-top:16px; line-height:1.8;">${summary}</div>
+      `;
+    }
+
+    function exportCsv() {
+      const rows = [['Data', 'Elev', 'Tip', 'Lecții', 'Notă']];
+      const absences = getAbsences();
+      const studentMap = getStudentMap();
+
+      absences.forEach(item => {
+        rows.push([
+          item.date,
+          studentMap[item.student] || '',
+          item.fullDay ? 'Zi întreagă' : 'Lecții selectate',
+          item.fullDay ? 'Toată ziua' : (item.lessons || []).join(' | '),
+          item.note || ''
+        ]);
+      });
+
+      const csv = rows.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'raport_absente.csv';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function resetAllData() {
+      const confirmed = confirm('Sigur vrei să resetezi toate datele? Această acțiune va șterge elevii, absențele, întârzierile și setările.');
+      if (!confirmed) return;
+
+      save(STORAGE_KEYS.students, []);
+      save(STORAGE_KEYS.absences, []);
+      save(STORAGE_KEYS.tardiness, []);
+      save(STORAGE_KEYS.duty, []);
+      save(STORAGE_KEYS.settings, defaultSettings);
+      save(STORAGE_KEYS.activity, []);
+      logActivity('Toate datele au fost resetate.');
+      seedData();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderSettings();
+      renderStudentOptions();
+      renderDashboard();
+      renderAbsences();
+      renderLate();
+      renderDuty();
+      renderStudents();
+      renderCalendar();
+      renderReports();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+          btn.classList.add('active');
+          const target = btn.getAttribute('data-target');
+          document.querySelectorAll('.section').forEach(section => {
+            section.classList.toggle('hidden', section.id !== target);
+          });
+        });
+      });
+
+      document.getElementById('globalSearch').addEventListener('input', (e) => {
+        const value = e.target.value.trim().toLowerCase();
+        const students = getStudents();
+
+        const matches = students.filter(s => s.name.toLowerCase().includes(value));
+        if (!value) {
+          renderStudents();
+          return;
+        }
+
+        const tbody = document.getElementById('studentsTableBody');
+        tbody.innerHTML = '';
+        if (!matches.length) {
+          tbody.innerHTML = '<tr><td colspan="2" class="empty">Niciun elev găsit.</td></tr>';
+          return;
+        }
+
+        matches.forEach(student => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${student.name}</td>
+            <td>
+              <button class="small-btn" data-action="edit" data-id="${student.id}">Editează</button>
+              <button class="small-btn danger-btn" data-action="delete" data-id="${student.id}">Șterge</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        tbody.querySelectorAll('button').forEach(btn => {
+          const action = btn.getAttribute('data-action');
+          const id = btn.getAttribute('data-id');
+          btn.addEventListener('click', () => {
+            if (action === 'delete') {
+              const next = getStudents().filter(item => item.id !== id);
+              save(STORAGE_KEYS.students, next);
+              logActivity('Un elev a fost șters din listă.');
+              renderAll();
+              return;
+            }
+            const student = getStudents().find(item => item.id === id);
+            const value = prompt('Editează numele elevului:', student.name);
+            if (!value) return;
+            const next = getStudents().map(item => item.id === id ? { ...item, name: value.trim() } : item);
+            save(STORAGE_KEYS.students, next);
+            logActivity(`Numele elevului a fost modificat în "${value.trim()}".`);
+            renderAll();
+          });
+        });
+      });
+
+      document.getElementById('studentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('studentName').value.trim();
+        if (!name) return;
+
+        const students = getStudents();
+        students.push({ id: uid(), name, createdAt: Date.now() });
+        save(STORAGE_KEYS.students, students);
+        logActivity(`A fost adăugat elevul "${name}".`);
+        document.getElementById('studentForm').reset();
+        renderAll();
+      });
+
+      document.getElementById('studentSearch').addEventListener('input', () => renderStudents());
+
+      document.getElementById('absenceForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const student = document.getElementById('absenceStudent').value;
+        const date = document.getElementById('absenceDate').value;
+        const fullDay = document.getElementById('absenceFullDay').checked;
+        const lessons = fullDay ? [] : Array.from(document.getElementById('absenceLessons').selectedOptions).map(opt => opt.value);
+        const note = document.getElementById('absenceNote').value.trim();
+
+        if (!student || !date) {
+          alert('Selectează elevul și data.');
+          return;
+        }
+
+        const absences = getAbsences();
+        absences.push({
+          id: uid(),
+          student,
+          date,
+          fullDay,
+          lessons,
+          note
+        });
+        save(STORAGE_KEYS.absences, absences);
+        logActivity('A fost înregistrată o absență.');
+        document.getElementById('absenceForm').reset();
+        renderAll();
+      });
+
+      document.getElementById('clearAbsenceHistory').addEventListener('click', () => {
+        if (!confirm('Sigur vrei să golești istoricul absențelor?')) return;
+        save(STORAGE_KEYS.absences, []);
+        logActivity('Istoricul absențelor a fost golit.');
+        renderAll();
+      });
+
+      document.getElementById('lateForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const student = document.getElementById('lateStudent').value;
+        const date = document.getElementById('lateDate').value;
+        const lesson = document.getElementById('lateLesson').value;
+        const minutes = Number(document.getElementById('lateMinutes').value);
+        const note = document.getElementById('lateNote').value.trim();
+
+        if (!student || !date || !lesson || !minutes) {
+          alert('Completează toate câmpurile.');
+          return;
+        }
+
+        const tardiness = getLate();
+        tardiness.push({
+          id: uid(),
+          student,
+          date,
+          lesson,
+          minutes,
+          note
+        });
+        save(STORAGE_KEYS.tardiness, tardiness);
+        logActivity('A fost înregistrată o întârziere.');
+        document.getElementById('lateForm').reset();
+        renderAll();
+      });
+
+      document.getElementById('setDutyBtn').addEventListener('click', () => {
+        const student = document.getElementById('dutySelect').value;
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!student) {
+          alert('Selectează un elev.');
+          return;
+        }
+
+        const duty = getDuty().filter(item => item.date !== today);
+        duty.push({ id: uid(), date: today, student });
+        save(STORAGE_KEYS.duty, duty);
+        logActivity('Elevul de serviciu pentru astăzi a fost actualizat.');
+        renderAll();
+      });
+
+      document.getElementById('calendarShowBtn').addEventListener('click', renderCalendar);
+
+      document.getElementById('reportType').addEventListener('change', renderReports);
+      document.getElementById('reportFrom').addEventListener('input', renderReports);
+      document.getElementById('reportTo').addEventListener('input', renderReports);
+
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+      document.getElementById('printReportBtn').addEventListener('click', printReport);
+
+      document.getElementById('settingsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const settings = getSettings();
+        const nextSettings = {
+          ...settings,
+          className: document.getElementById('classNameInput').value.trim() || 'Clasa mea',
+          lessonsPerDay: Number(document.getElementById('lessonsPerDayInput').value) || 4
+        };
+        setSettings(nextSettings);
+        logActivity('Setările au fost salvate.');
+        renderAll();
+      });
+
+      document.getElementById('resetAllDataBtn').addEventListener('click', resetAllData);
+    }
+
+    seedData();
+    bindEvents();
+    renderAll();
+  </script>
+</body>
+</html>
